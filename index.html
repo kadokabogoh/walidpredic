@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prediksi Over/Under dengan Input Nama</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; max-width: 500px; }
+  label { display: block; margin-top: 10px; }
+  input { width: 100%; padding: 8px; margin-top: 5px; }
+  button { margin-top: 15px; padding: 10px 20px; width: 100%; font-size: 16px; cursor: pointer; }
+  .result { margin-top: 20px; font-size: 1.3em; font-weight: bold; text-align: center; }
+  .catatan { margin-top: 15px; font-style: italic; background: #f0f0f0; padding: 10px; border-radius: 5px; }
+  .welcome { font-weight: 600; font-size: 1.2em; margin-bottom: 20px; }
+  #step2 { display: none; }
+</style>
+</head>
+<body>
+
+<div id="step1">
+  <h2>Masukkan Nama Kamu</h2>
+  <label>Nama:</label>
+  <input type="text" id="nama" placeholder="Tulis nama kamu di sini" required />
+  <button onclick="lanjut()">Lanjut ke Prediksi</button>
+</div>
+
+<div id="step2">
+  <div class="welcome" id="welcomeUser"></div>
+
+  <h2>Prediksi Over/Under Random</h2>
+
+  <label>Odds Home:</label>
+  <input type="number" step="0.01" id="oddsHome" placeholder="Contoh: 1.80" min="1" required />
+
+  <label>Odds Away:</label>
+  <input type="number" step="0.01" id="oddsAway" placeholder="Contoh: 2.20" min="1" required />
+
+  <label>Pasaran Over (misal 2.25, 2.5, 2.75):</label>
+  <input type="number" step="0.01" id="pasaranOver" placeholder="Contoh: 2.5" min="0" required />
+
+  <label>Odds Over:</label>
+  <input type="number" step="0.01" id="oddsOver" placeholder="Contoh: 1.90" min="1" required />
+
+  <label>Odds Under:</label>
+  <input type="number" step="0.01" id="oddsUnder" placeholder="Contoh: 1.95" min="1" required />
+
+  <button onclick="prediksiRandom()">Prediksi Sekarang</button>
+
+  <div class="result" id="result"></div>
+  <div class="catatan" id="catatan"></div>
+</div>
+
+<script>
+function lanjut() {
+  const nama = document.getElementById('nama').value.trim();
+  if (nama === '') {
+    alert('Mohon isi nama dulu ya');
+    return;
+  }
+  // Sembunyikan step1, tampilkan step2
+  document.getElementById('step1').style.display = 'none';
+  document.getElementById('step2').style.display = 'block';
+
+  // Tampilkan nama di step2
+  document.getElementById('welcomeUser').textContent = `Halo, ${nama}koplok! Selamat datang di halaman Walid Predic.`;
+}
+
+function prediksiRandom() {
+  const nama = document.getElementById('nama').value.trim();
+  const oddsHome = parseFloat(document.getElementById('oddsHome').value);
+  const oddsAway = parseFloat(document.getElementById('oddsAway').value);
+  const pasaranOver = parseFloat(document.getElementById('pasaranOver').value);
+  const oddsOver = parseFloat(document.getElementById('oddsOver').value);
+  const oddsUnder = parseFloat(document.getElementById('oddsUnder').value);
+
+  if (
+    isNaN(oddsHome) || oddsHome < 1 ||
+    isNaN(oddsAway) || oddsAway < 1 ||
+    isNaN(pasaranOver) || pasaranOver < 0 ||
+    isNaN(oddsOver) || oddsOver < 1 ||
+    isNaN(oddsUnder) || oddsUnder < 1
+  ) {
+    alert('Mohon isi semua input dengan angka valid dan odds tidak boleh kurang dari 1');
+    return;
+  }
+
+  const pOver = 1 / oddsOver;
+  const pUnder = 1 / oddsUnder;
+  const total = pOver + pUnder;
+  const normalizedOver = pOver / total;
+
+  const rand = Math.random();
+  const hasil = rand < normalizedOver ? "Over" : "Under";
+
+  document.getElementById('result').textContent = "Prediksi: " + hasil;
+
+  const catatanEl = document.getElementById('catatan');
+  if (hasil === "Over") {
+    catatanEl.textContent = `Hehh  ${nama}Koplok, jangan senang dulu. Hati-hati jika 1-1 sababak suka nyaduk babak keduanyah, kalo 0-0 juga kadang suka jadi over pusing bray ah sok gera bet keun.`;
+  } else {
+    catatanEl.textContent = `Hehh  ${nama} Koplok, jangan senang dulu lamun 0-0 sababak soalnya banyak gol nyeletot di menit 90+, tapi kadang sababak 1-1 nepi angges kmaha milik na we ah gaspoll.`;
+  }
+}
+</script>
+
+</body>
+</html>
